@@ -1,0 +1,2 @@
+- [Installation](https://www.freecadweb.org/wiki/Install_on_Unix#Stable_PPA_with_GUI)
+- [Tutorials](https://www.freecadweb.org/wiki/Category:Tutorials)
