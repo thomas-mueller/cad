@@ -1,15 +1,11 @@
-#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-import os
 import sys
 
 from PyQt4 import QtCore, QtGui
-from PyQt4.QtGui import QMainWindow, QWorkspace, QAction, QApplication
+from PyQt4.QtGui import QMainWindow, QWorkspace
 
 from pivy.quarter import QuarterWidget
-
-sys.path.append("/usr/lib/freecad/lib")
-import FreeCADGui
 
 
 class MdiQuarterWidget(QuarterWidget):
@@ -21,7 +17,7 @@ class MdiQuarterWidget(QuarterWidget):
 
 
 class MdiMainWindow(QMainWindow):
-	def __init__(self, qApp):
+	def __init__(self, qApp, freecadGraph):
 		QMainWindow.__init__(self)
 		self._firstwidget = None
 		self._workspace = QWorkspace()
@@ -29,24 +25,15 @@ class MdiMainWindow(QMainWindow):
 		self.setAcceptDrops(True)
 		self.setWindowTitle("Pivy Quarter MDI example")
 
-		self.createBoxInFreeCAD()
+		child = self.createMdiChild()
+		child.show()
+		child.setSceneGraph(freecadGraph)
 
 		windowmapper = QtCore.QSignalMapper(self)
-		self.connect(windowmapper, QtCore.SIGNAL("mapped(QWidget *)"), self._workspace.setActiveWindow)
-
-		self.dirname = os.curdir
+		self.connect(QtCore.QSignalMapper(self), QtCore.SIGNAL("mapped(QWidget *)"), self._workspace.setActiveWindow)
 
 	def closeEvent(self, event):
 		self._workspace.closeAllWindows()
-
-	def createBoxInFreeCAD(self):
-		d=FreeCAD.newDocument()
-		o=d.addObject("Part::Box")
-		d.recompute()
-		s=FreeCADGui.subgraphFromObject(o)
-		child = self.createMdiChild()
-		child.show()
-		child.setSceneGraph(s)
 
 	def createMdiChild(self):
 		widget = MdiQuarterWidget(None, self._firstwidget)
@@ -55,14 +42,3 @@ class MdiMainWindow(QMainWindow):
 			self._firstwidget = widget
 		return widget
 
-
-def main():
-	app = QApplication(sys.argv)
-	FreeCADGui.setupWithoutGUI()
-	mdi = MdiMainWindow(app)
-	mdi.show()
-	sys.exit(app.exec_())
-
-
-if __name__ == '__main__':
-	main()
