@@ -1,0 +1,22 @@
+
+import os
+
+document = App.newDocument("example2")
+
+box1 = document.addObject("Part::Box", "Box1")
+box1.Length = 50
+box1.Width = 50
+box1.Height= 750
+
+box2 = document.addObject("Part::Box", "Box2")
+box2.Length = 40
+box2.Width = 40
+box2.Height= 750
+
+projectFilename = os.path.join("/home/tmuller/cad/example2.fcstd")
+if os.path.exists(projectFilename):
+	os.remove(projectFilename)
+document.saveAs(projectFilename)
+
+Gui.activeDocument().activeView().viewAxonometric()
+Gui.SendMsgToActiveView("ViewFit")

@@ -16,12 +16,12 @@ def main():
 	app = QApplication(sys.argv)
 	
 	Gui.setupWithoutGUI()
-	document = App.newDocument()
+	document = App.newDocument("example1")
 	box = document.addObject("Part::Box")
 	
 	document.recompute()
 	
-	projectFilename = "example.fcstd"
+	projectFilename = "example1.fcstd"
 	if os.path.exists(projectFilename):
 		os.remove(projectFilename)
 	document.saveAs(projectFilename)
