@@ -3,23 +3,32 @@
 
 import graphics
 import sys
+import os
 
 from PyQt4.QtGui import QApplication
 
 sys.path.append("/usr/lib/freecad/lib")
-import FreeCADGui
+import FreeCAD as App
+import FreeCADGui as Gui
 
 
 def main():
 	app = QApplication(sys.argv)
 	
-	FreeCADGui.setupWithoutGUI()
-	d=FreeCAD.newDocument()
-	o=d.addObject("Part::Box")
-	d.recompute()
-	s=FreeCADGui.subgraphFromObject(o)
+	Gui.setupWithoutGUI()
+	document = App.newDocument()
+	box = document.addObject("Part::Box")
 	
-	mdi = graphics.MdiMainWindow(app, s)
+	document.recompute()
+	
+	projectFilename = "example.fcstd"
+	if os.path.exists(projectFilename):
+		os.remove(projectFilename)
+	document.saveAs(projectFilename)
+	
+	graph = Gui.subgraphFromObject(box)
+	
+	mdi = graphics.MdiMainWindow(app, graph)
 	mdi.show()
 	sys.exit(app.exec_())
 
